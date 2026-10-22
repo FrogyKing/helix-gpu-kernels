@@ -85,7 +85,7 @@ left.plotly_chart(
         hover_data=["operation", "shape_label", "gpu"],
         title="Median operator latency (µs)",
     ),
-    use_container_width=True,
+    width="stretch",
 )
 right.plotly_chart(
     px.bar(
@@ -96,7 +96,7 @@ right.plotly_chart(
         barmode="group",
         title="Speedup vs native PyTorch baseline",
     ),
-    use_container_width=True,
+    width="stretch",
 )
 samples = []
 for _, row in valid.iterrows():
@@ -119,7 +119,7 @@ if samples:
             points="all",
             title="Latency distribution",
         ),
-        use_container_width=True,
+        width="stretch",
     )
 for metric, title in [
     ("achieved_useful_tflops", "Useful arithmetic throughput (TFLOP/s)"),
@@ -130,10 +130,10 @@ for metric, title in [
     if metric in valid:
         st.plotly_chart(
             px.bar(valid, x="backend", y=metric, color="dtype", barmode="group", title=title),
-            use_container_width=True,
+            width="stretch",
         )
 st.caption("Minimum I/O bandwidth is an analytical lower bound, not a hardware DRAM counter.")
-st.dataframe(valid.drop(columns=["samples_us"], errors="ignore"), use_container_width=True)
+st.dataframe(valid.drop(columns=["samples_us"], errors="ignore"), width="stretch")
 with st.expander("Hardware, profiling and inference artifacts"):
     for artifact in artifacts:
         st.json({key: value for key, value in artifact.items() if key != "rows"})

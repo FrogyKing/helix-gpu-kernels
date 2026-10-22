@@ -18,6 +18,14 @@ sample are persisted. There is no event-overhead subtraction or outlier deletion
 One case's warmups follow the previous case; kernel ordering is fixed, not randomized.
 Clock locking is not assumed. These limitations matter for very short kernels.
 
+A second timing mode captures ten complete operators in one CUDA Graph and
+reports amortized per-operator replay samples (up to ten replays). Inputs and
+output memory are stable during replay; Python dispatch and allocation are
+excluded. Multi-kernel PyTorch operations remain multi-kernel graph sequences.
+This is closer to kernel-level device work than a Python dispatch interval, but
+is still a graph execution measurement and does not identify every constituent
+kernel's duration. Use the profiler trace for individual kernel observations.
+
 GPU allocator peaks are measured after warmup. They exclude CUDA context and
 driver allocations, and are not equivalent to nvidia-smi process memory. Minimum
 input/output bytes are analytical lower bounds. CUDA softmax's three reads and

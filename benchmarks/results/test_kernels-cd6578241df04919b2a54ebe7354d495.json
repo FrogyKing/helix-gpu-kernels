@@ -1,0 +1,43 @@
+{
+  "hardware": {
+    "python": "3.12.1",
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.35",
+    "torch": "2.7.1+cu126",
+    "cuda_runtime": "12.6",
+    "cuda_available": true,
+    "driver": "610.57.04",
+    "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2024 NVIDIA Corporation\nBuilt on Tue_Oct_29_23:50:19_PDT_2024\nCuda compilation tools, release 12.6, V12.6.85\nBuild cuda_12.6.r12.6/compiler.35059454_0",
+    "profiler_tools": {
+      "ncu": "/usr/local/cuda/bin/ncu",
+      "nsys": null
+    },
+    "triton": "3.3.1",
+    "gpu": "NVIDIA L4",
+    "compute_capability": [
+      8,
+      9
+    ],
+    "total_memory_bytes": 23689363456,
+    "multiprocessors": 58,
+    "tf32_matmul": false,
+    "tf32_cudnn": true
+  },
+  "success": true,
+  "returncode": 0,
+  "stdout": "........................................................................ [ 43%]\n........................................................................ [ 86%]\n......................                                                   [100%]\n=============================== warnings summary ===============================\ntests/gpu/test_kernels.py::test_softmax[shape0-dtype0-cuda]\n  /usr/local/lib/python3.12/site-packages/torch/utils/cpp_extension.py:2356: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation. \n  If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].\n    warnings.warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n166 passed, 1 warning in 246.80s (0:04:06)\n",
+  "stderr": "",
+  "remote_body_elapsed_seconds": 250.468323085,
+  "git_revision": "uncommitted",
+  "git_dirty": true,
+  "gpu_requested": "L4",
+  "cost_reservation": {
+    "id": "cd6578241df04919b2a54ebe7354d495",
+    "created_utc": "2026-10-22T07:51:25.248303+00:00",
+    "job": "test_kernels",
+    "gpu": "L4",
+    "timeout_seconds": 900,
+    "reserved_usd": 0.339099,
+    "status": "reserved",
+    "pricing_date": "2026-10-22"
+  }
+}

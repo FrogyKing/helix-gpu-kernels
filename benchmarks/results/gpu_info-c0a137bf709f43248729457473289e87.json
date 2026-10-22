@@ -1,0 +1,37 @@
+{
+  "python": "3.12.1",
+  "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.35",
+  "torch": "2.7.1+cu126",
+  "cuda_runtime": "12.6",
+  "cuda_available": true,
+  "driver": "610.57.04",
+  "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2024 NVIDIA Corporation\nBuilt on Tue_Oct_29_23:50:19_PDT_2024\nCuda compilation tools, release 12.6, V12.6.85\nBuild cuda_12.6.r12.6/compiler.35059454_0",
+  "profiler_tools": {
+    "ncu": "/usr/local/cuda/bin/ncu",
+    "nsys": null
+  },
+  "triton": "3.3.1",
+  "gpu": "NVIDIA L4",
+  "compute_capability": [
+    8,
+    9
+  ],
+  "total_memory_bytes": 23689363456,
+  "multiprocessors": 58,
+  "tf32_matmul": false,
+  "tf32_cudnn": true,
+  "remote_body_elapsed_seconds": 3.9266886960000003,
+  "git_revision": "uncommitted",
+  "git_dirty": true,
+  "gpu_requested": "L4",
+  "cost_reservation": {
+    "id": "c0a137bf709f43248729457473289e87",
+    "created_utc": "2026-10-22T07:51:02.126111+00:00",
+    "job": "gpu_info",
+    "gpu": "L4",
+    "timeout_seconds": 120,
+    "reserved_usd": 0.079788,
+    "status": "reserved",
+    "pricing_date": "2026-10-22"
+  }
+}
