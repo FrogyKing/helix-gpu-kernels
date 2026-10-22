@@ -1,0 +1,60 @@
+[project]
+name = "helix-gpu-kernels"
+version = "0.1.0"
+description = "Reproducible CUDA and Triton experiments for transformer inference"
+readme = "README.md"
+authors = [
+    { name = "Luis Gonzalez", email = "luisgonzalezalvarez991@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "modal==1.6.2",
+    "numpy>=2.2,<3",
+    "torch==2.7.1",
+]
+
+[project.optional-dependencies]
+dashboard = ["streamlit>=1.44,<2", "pandas>=2.2,<3", "plotly>=6,<7"]
+inference = ["transformers==4.51.3", "safetensors>=0.5,<1", "accelerate>=1.6,<2"]
+gpu = ["triton==3.3.1; sys_platform == 'linux'"]
+
+[dependency-groups]
+dev = ["pytest>=8.3,<9", "ruff>=0.11,<1", "clang-format==19.1.7"]
+
+[project.scripts]
+helix = "helix.cli:main"
+
+[build-system]
+requires = ["setuptools>=75,<81"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["helix*", "triton_kernels*", "modal_apps*"]
+
+[tool.setuptools.data-files]
+"share/helix/cuda/include" = ["cuda/include/helix.h", "cuda/include/helix.cuh"]
+"share/helix/cuda/bindings" = ["cuda/bindings/bindings.cpp"]
+"share/helix/cuda/src/softmax" = ["cuda/src/softmax/softmax.cu"]
+"share/helix/cuda/src/gemm" = ["cuda/src/gemm/gemm.cu"]
+"share/helix/cuda/src/attention" = ["cuda/src/attention/attention.cu"]
+"share/helix/cuda/src/rmsnorm" = ["cuda/src/rmsnorm/rmsnorm.cu"]
+"share/helix/cuda/src/quantization" = ["cuda/src/quantization/linear.cu"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.ruff]
+line-length = 100
+exclude = ["src"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["gpu: requires a CUDA device", "integration: downloads a pretrained model"]
