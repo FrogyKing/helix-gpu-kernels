@@ -133,6 +133,21 @@ for metric, title in [
             width="stretch",
         )
 st.caption("Minimum I/O bandwidth is an analytical lower bound, not a hardware DRAM counter.")
+if "cuda_graph_median_us" in valid:
+    st.plotly_chart(
+        px.bar(
+            valid,
+            x="backend",
+            y="cuda_graph_median_us",
+            color="dtype",
+            barmode="group",
+            title="CUDA Graph replay: amortized device time per operator (µs)",
+        ),
+        width="stretch",
+    )
+    st.caption(
+        "Ten captured operators per replay. Python scheduling and output allocation excluded."
+    )
 st.dataframe(valid.drop(columns=["samples_us"], errors="ignore"), width="stretch")
 with st.expander("Hardware, profiling and inference artifacts"):
     for artifact in artifacts:

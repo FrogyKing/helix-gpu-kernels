@@ -70,11 +70,12 @@ def dispatch(function, job, timeout, execute=False, approved_usd=0.0, **kwargs):
         return
     ledger = ROOT / "benchmarks/cost_ledger.json"
     record = reserve(ledger, GPU, timeout, job, approved_usd)
+    source_provenance = provenance()
     started = time.perf_counter()
     status = "failed"
     try:
         result = function.remote(**kwargs)
-        result.update(provenance(), cost_reservation=record)
+        result.update(source_provenance, cost_reservation=record)
         target = ROOT / "benchmarks/results" / f"{job}-{record['id']}.json"
         write_atomic(target, result)
         if "rows" in result:
@@ -85,5 +86,17 @@ def dispatch(function, job, timeout, execute=False, approved_usd=0.0, **kwargs):
         status = "completed" if result.get("success", True) else "validation_failed"
         if status != "completed":
             raise RuntimeError(f"Remote validation failed. See {target}")
+    except Exception as exc:
+        write_atomic(
+            ROOT / "benchmarks/results" / f"failure-{job}-{record['id']}.json",
+            {
+                "success": False,
+                "job": job,
+                "error": f"{type(exc).__name__}: {exc}",
+                "cost_reservation": record,
+                **source_provenance,
+            },
+        )
+        raise
     finally:
         finish(ledger, record["id"], time.perf_counter() - started, status)

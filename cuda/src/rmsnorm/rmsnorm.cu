@@ -4,7 +4,8 @@ namespace helix {
 
 template <typename T>
 __global__ void rmsnorm_rows(const T *__restrict__ x, const T *__restrict__ weight,
-                             T *__restrict__ output, int64_t width, float eps) {
+                             T *__restrict__ output, int64_t width, float eps,
+                             bool round_normalized) {
   const int64_t base = static_cast<int64_t>(blockIdx.x) * width;
   float squares = 0.0f;
   for (int64_t j = threadIdx.x; j < width; j += blockDim.x) {
@@ -12,12 +13,15 @@ __global__ void rmsnorm_rows(const T *__restrict__ x, const T *__restrict__ weig
     squares += value * value;
   }
   const float inverse = rsqrtf(block_reduce<false>(squares) / width + eps);
-  for (int64_t j = threadIdx.x; j < width; j += blockDim.x)
-    output[base + j] =
-        static_cast<T>(static_cast<float>(x[base + j]) * inverse * static_cast<float>(weight[j]));
+  for (int64_t j = threadIdx.x; j < width; j += blockDim.x) {
+    float normalized = static_cast<float>(x[base + j]) * inverse;
+    if (round_normalized)
+      normalized = static_cast<float>(static_cast<T>(normalized));
+    output[base + j] = static_cast<T>(normalized * static_cast<float>(weight[j]));
+  }
 }
 
-torch::Tensor rmsnorm(torch::Tensor x, torch::Tensor weight, double eps) {
+torch::Tensor rmsnorm(torch::Tensor x, torch::Tensor weight, double eps, bool round_normalized) {
   check_tensor(x, "x");
   check_tensor(weight, "weight");
   check_same(x, weight);
@@ -36,9 +40,9 @@ torch::Tensor rmsnorm(torch::Tensor x, torch::Tensor weight, double eps) {
   TORCH_CHECK(rows <= std::numeric_limits<int>::max(), "too many RMSNorm rows");
   const auto stream = at::cuda::getCurrentCUDAStream();
   AT_DISPATCH_FLOATING_TYPES_AND2(at::kHalf, at::kBFloat16, x.scalar_type(), "helix_rmsnorm", [&] {
-    rmsnorm_rows<scalar_t>
-        <<<rows, 256, 0, stream>>>(x.data_ptr<scalar_t>(), weight.data_ptr<scalar_t>(),
-                                   output.data_ptr<scalar_t>(), width, static_cast<float>(eps));
+    rmsnorm_rows<scalar_t><<<rows, 256, 0, stream>>>(
+        x.data_ptr<scalar_t>(), weight.data_ptr<scalar_t>(), output.data_ptr<scalar_t>(), width,
+        static_cast<float>(eps), round_normalized);
   });
   C10_CUDA_KERNEL_LAUNCH_CHECK();
   return output;

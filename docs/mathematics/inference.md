@@ -10,6 +10,14 @@ when this experiment is explicitly invoked. Model files are not redistributed.
 The experiment replaces each LlamaRMSNorm module with a forward-only Helix
 implementation, preserving its exact learned weight parameter and epsilon.
 Attention, rotary embeddings, linears and KV cache retain the framework path.
+The integration explicitly enables `round_normalized=True`: Llama casts the
+normalized activation back to its input dtype **before** multiplying by the
+learned weight. Standard Helix RMSNorm instead multiplies in FP32 and casts once
+at the end. Both implement the same real-valued formula, but their FP16/BF16
+rounding differs. The initial real-model run exceeded the logit tolerance with
+the single-rounding variant (398 of 491,520 logits mismatched; maximum reported
+failing absolute difference 0.09375). The compatible mode preserves the original
+rounding sequence inside the fused kernel. The acceptance tolerance was unchanged.
 The same loaded model runs baseline first and then the replacement; timing order
 can bias results and should be alternated in a larger study. Generation uses a
 real English prompt, greedy decoding, a fixed number of new tokens and caching.

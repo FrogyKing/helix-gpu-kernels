@@ -10,16 +10,21 @@ from ._validation import floating, last_dimension
 
 
 @triton.jit
-def _rmsnorm(X, W, Y, N: tl.constexpr, EPS: tl.constexpr, BLOCK: tl.constexpr):
+def _rmsnorm(
+    X, W, Y, N: tl.constexpr, EPS: tl.constexpr, BLOCK: tl.constexpr, ROUND_NORMALIZED: tl.constexpr
+):
     row = tl.program_id(0)
     col = tl.arange(0, BLOCK)
     x = tl.load(X + row * N + col, col < N, other=0).to(tl.float32)
     w = tl.load(W + col, col < N, other=0).to(tl.float32)
     inv = tl.rsqrt(tl.sum(x * x, axis=0) / N + EPS)
-    tl.store(Y + row * N + col, x * inv * w, col < N)
+    normalized = x * inv
+    if ROUND_NORMALIZED:
+        normalized = normalized.to(Y.dtype.element_ty).to(tl.float32)
+    tl.store(Y + row * N + col, normalized * w, col < N)
 
 
-def rmsnorm(x, weight, eps=1e-6):
+def rmsnorm(x, weight, eps=1e-6, round_normalized=False):
     """Accumulate mean square in FP32, matching the documented FP32 reference."""
     floating(x, weight)
     last_dimension(x)
@@ -33,6 +38,6 @@ def rmsnorm(x, weight, eps=1e-6):
         warps = 4 if block <= 2048 else 8 if block <= 8192 else 16
         with torch.cuda.device(x.device):
             _rmsnorm[(x.numel() // x.shape[-1],)](
-                x, weight, y, x.shape[-1], eps, block, num_warps=warps
+                x, weight, y, x.shape[-1], eps, block, round_normalized, num_warps=warps
             )
     return y

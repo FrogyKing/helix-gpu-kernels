@@ -185,6 +185,7 @@ def run_suite(config_path, deadline_seconds=420):
                         operation, shape, dtype, causal
                     )
                     baseline_us = None
+                    baseline_graph_us = None
                     for backend, fn in functions.items():
                         row = {
                             "operation": operation,
@@ -217,7 +218,11 @@ def run_suite(config_path, deadline_seconds=420):
                             row["status"] = "passed"
                             if backend == "pytorch":
                                 baseline_us = row["median_us"]
+                                baseline_graph_us = row["cuda_graph_median_us"]
                             row["speedup_vs_pytorch"] = baseline_us / row["median_us"]
+                            row["cuda_graph_speedup_vs_pytorch"] = (
+                                baseline_graph_us / row["cuda_graph_median_us"]
+                            )
                             row["useful_flops"] = flops
                             row["achieved_useful_tflops"] = flops / (row["median_us"] * 1e6)
                             row["minimum_io_bytes_analytical"] = useful_bytes

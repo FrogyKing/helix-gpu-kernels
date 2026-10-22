@@ -37,3 +37,17 @@ def test_replacement_preserves_weights_and_epsilon(monkeypatch):
 def test_unsupported_model_rejected():
     with pytest.raises(ValueError, match="no supported"):
         replace_rmsnorm(torch.nn.Linear(3, 4), "triton")
+
+
+@pytest.mark.parametrize("dtype", [torch.float16, torch.bfloat16])
+def test_llama_rounding_order(dtype):
+    torch.manual_seed(53)
+    x = torch.randn(5, 576, dtype=dtype)
+    weight = torch.randn(576, dtype=dtype)
+    normalized = (x.float() * torch.rsqrt(x.float().square().mean(-1, keepdim=True) + 1e-5)).to(
+        dtype
+    )
+    expected = weight * normalized
+    actual = reference.rmsnorm(x, weight, 1e-5, round_normalized=True)
+    torch.testing.assert_close(actual, expected, rtol=0, atol=0)
+    assert torch.any(reference.rmsnorm(x, weight, 1e-5) != expected)

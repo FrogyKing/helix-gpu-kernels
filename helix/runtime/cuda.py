@@ -52,9 +52,9 @@ def softmax(x: Any) -> Any:
     return load_extension().softmax(x)
 
 
-def rmsnorm(x: Any, weight: Any, eps: float = 1e-6) -> Any:
+def rmsnorm(x: Any, weight: Any, eps: float = 1e-6, round_normalized: bool = False) -> Any:
     """RMSNorm with a matching-dtype weight vector and FP32 accumulation."""
-    return load_extension().rmsnorm(x, weight, eps)
+    return load_extension().rmsnorm(x, weight, eps, round_normalized)
 
 
 def gemm(a: Any, b: Any, variant: str = "tiled") -> Any:

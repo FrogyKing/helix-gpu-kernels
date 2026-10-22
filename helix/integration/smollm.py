@@ -23,7 +23,9 @@ class KernelRMSNorm(torch.nn.Module):
         self.kernel = importlib.import_module(module).rmsnorm
 
     def forward(self, hidden_states):
-        return self.kernel(hidden_states.contiguous(), self.weight, self.variance_epsilon)
+        return self.kernel(
+            hidden_states.contiguous(), self.weight, self.variance_epsilon, round_normalized=True
+        )
 
 
 def replace_rmsnorm(model, backend):

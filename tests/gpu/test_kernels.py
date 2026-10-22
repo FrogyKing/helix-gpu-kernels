@@ -132,3 +132,14 @@ def test_current_cuda_stream(backend):
         actual = fn(x)
     stream.synchronize()
     torch.testing.assert_close(actual, expected)
+
+
+@pytest.mark.parametrize("backend", ["cuda", "triton"])
+@pytest.mark.parametrize("dtype", [torch.float16, torch.bfloat16])
+@pytest.mark.parametrize("width", [33, 576])
+def test_rmsnorm_llama_rounding(backend, dtype, width):
+    x = torch.randn(5, width, device="cuda", dtype=dtype)
+    weight = torch.randn(width, device="cuda", dtype=dtype)
+    actual = implementation(backend, "rmsnorm")(x, weight, 1e-5, round_normalized=True)
+    expected = ref.rmsnorm(x, weight, 1e-5, round_normalized=True)
+    torch.testing.assert_close(actual, expected, **tolerance(dtype))

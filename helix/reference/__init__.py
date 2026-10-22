@@ -11,13 +11,18 @@ def softmax(x: torch.Tensor) -> torch.Tensor:
     return torch.softmax(x, dim=-1)
 
 
-def rmsnorm(x: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
+def rmsnorm(
+    x: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6, round_normalized: bool = False
+) -> torch.Tensor:
     if eps <= 0 or not math.isfinite(eps):
         raise ValueError("eps must be finite and positive")
     if x.ndim < 1 or x.shape[-1] == 0 or weight.shape != (x.shape[-1],):
         raise ValueError("weight must match a nonempty last dimension")
     xf = x.float()
-    return (xf * torch.rsqrt(xf.square().mean(-1, keepdim=True) + eps) * weight.float()).to(x.dtype)
+    normalized = xf * torch.rsqrt(xf.square().mean(-1, keepdim=True) + eps)
+    if round_normalized:
+        normalized = normalized.to(x.dtype).float()
+    return (normalized * weight.float()).to(x.dtype)
 
 
 def gemm(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
