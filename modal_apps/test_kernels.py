@@ -10,7 +10,14 @@ def run_tests():
     import subprocess
     import time
 
+    import torch
+
     from helix.runtime.metadata import hardware
+
+    if not torch.cuda.is_available():
+        raise RuntimeError(
+            "GPU validation requires a usable CUDA device; CPU skips are not success"
+        )
 
     started = time.perf_counter()
     process = subprocess.run(

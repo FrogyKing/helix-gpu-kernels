@@ -1,0 +1,17 @@
+{
+  "kind": "observed_validation_failure",
+  "source": "Modal client exception from app ap-DRD2QPIbmpdrNL5hhp7CTU",
+  "function_call_task": "ta-01M5H9TGYKMPXAANPVYXVF5P5R",
+  "model": "HuggingFaceTB/SmolLM2-135M",
+  "revision": "93efa2f097d58c2a74874c7e644dbc9b0cee75a2",
+  "backend": "triton",
+  "round_normalized": false,
+  "assertion_rtol": 0.01,
+  "assertion_atol": 0.05,
+  "mismatched_elements": 398,
+  "total_elements": 491520,
+  "greatest_absolute_difference_reported": 0.09375,
+  "greatest_absolute_difference_index": [0, 0, 40040],
+  "benchmark_artifact_returned": false,
+  "note": "Observed error only. Completed microbenchmark timings were not returned after the uncaught inference assertion and are not reconstructed."
+}

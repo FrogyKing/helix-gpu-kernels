@@ -51,13 +51,11 @@ for label, column in [
     ("Precision", "dtype"),
     ("Run", "run"),
 ]:
-    selection = st.sidebar.selectbox(label, ["All"] + sorted(df[column].unique().tolist()))
-    if selection != "All":
-        df = df[df[column] == selection]
+    selection = st.sidebar.selectbox(label, sorted(df[column].unique().tolist()))
+    df = df[df[column] == selection]
 if "causal" in df:
-    causal = st.sidebar.selectbox("Causal masking", ["All", "Causal", "Noncausal"])
-    if causal != "All":
-        df = df[df.causal == (causal == "Causal")]
+    causal = st.sidebar.selectbox("Causal masking", ["Noncausal", "Causal"])
+    df = df[df.causal == (causal == "Causal")]
 failed = df[df.status != "passed"]
 if not failed.empty:
     st.error(f"{len(failed)} cases failed validation. They are excluded from performance charts.")

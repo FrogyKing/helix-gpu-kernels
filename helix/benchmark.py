@@ -230,10 +230,11 @@ def run_suite(config_path, deadline_seconds=420):
                                 row["median_us"] * 1e3
                             )
                             # These are operator lower bounds, not measured DRAM traffic.
-                            row["arithmetic_intensity_lower_bound_io"] = flops / useful_bytes
+                            row["arithmetic_intensity_ideal_minimum_io"] = flops / useful_bytes
                         except Exception as exc:
                             row.update(status="failed", error=f"{type(exc).__name__}: {exc}")
                         rows.append(row)
+        print(f"Completed {operation}: {len(rows)} cumulative comparisons", flush=True)
     return {
         "success": all(r["status"] == "passed" for r in rows),
         "measured": True,
