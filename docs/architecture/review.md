@@ -25,7 +25,8 @@ Reviewed before publication:
   the home directory or the local virtual environment. No remote code is trusted
   when loading the safetensors model. Git excludes model files and auth files.
 
-Dynamic evidence: the initial L4 job ran 166 tests successfully. This does not
+Dynamic evidence: the initial L4 job ran 166 tests successfully; the expanded
+rounding-order suite then passed 176 tests. This does not
 replace a memory/race sanitizer pass, which remains an additional validation step.
 Large-grid exhaustion, multiple devices and other GPU architectures have not been
 exhaustively exercised. Optimization candidates remain experimental even when

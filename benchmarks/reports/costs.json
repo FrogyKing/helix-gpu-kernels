@@ -1,0 +1,72 @@
+{
+  "reservations": [
+    {
+      "id": "e406e7822f974164b80137dec697737a",
+      "created_utc": "2026-10-22T07:49:35.584989+00:00",
+      "job": "gpu_info",
+      "gpu": "L4",
+      "timeout_seconds": 120,
+      "reserved_usd": 0.079788,
+      "status": "failed",
+      "pricing_date": "2026-10-22",
+      "client_elapsed_seconds": 80.96059479995165
+    },
+    {
+      "id": "c0a137bf709f43248729457473289e87",
+      "created_utc": "2026-10-22T07:51:02.126111+00:00",
+      "job": "gpu_info",
+      "gpu": "L4",
+      "timeout_seconds": 120,
+      "reserved_usd": 0.079788,
+      "status": "completed",
+      "pricing_date": "2026-10-22",
+      "client_elapsed_seconds": 11.310102900024503
+    },
+    {
+      "id": "cd6578241df04919b2a54ebe7354d495",
+      "created_utc": "2026-10-22T07:51:25.248303+00:00",
+      "job": "test_kernels",
+      "gpu": "L4",
+      "timeout_seconds": 900,
+      "reserved_usd": 0.339099,
+      "status": "completed",
+      "pricing_date": "2026-10-22",
+      "client_elapsed_seconds": 260.82511249999516
+    },
+    {
+      "id": "e90b9cdaa6de4fc79210a06aaf55ace6",
+      "created_utc": "2026-10-22T07:57:14.092660+00:00",
+      "job": "benchmark",
+      "gpu": "L4",
+      "timeout_seconds": 600,
+      "reserved_usd": 0.239364,
+      "status": "failed",
+      "pricing_date": "2026-10-22",
+      "client_elapsed_seconds": 295.993543800083
+    },
+    {
+      "id": "83e5ebd77f4c4d238aa623ad7a236009",
+      "created_utc": "2026-10-22T08:05:55.505410+00:00",
+      "job": "test_kernels",
+      "gpu": "L4",
+      "timeout_seconds": 900,
+      "reserved_usd": 0.339099,
+      "status": "completed",
+      "pricing_date": "2026-10-22",
+      "client_elapsed_seconds": 264.3483147000661
+    },
+    {
+      "id": "7a62b743566a490482ef485321ec8b67",
+      "created_utc": "2026-10-22T08:10:32.634851+00:00",
+      "job": "benchmark",
+      "gpu": "L4",
+      "timeout_seconds": 600,
+      "reserved_usd": 0.239364,
+      "status": "completed",
+      "pricing_date": "2026-10-22",
+      "client_elapsed_seconds": 304.7298999999184
+    }
+  ],
+  "total_reserved_usd": 1.3165019999999998,
+  "note": "Reservations retained on failure. Reconcile with Modal billing. Not a cap."
+}

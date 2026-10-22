@@ -147,6 +147,28 @@ if "cuda_graph_median_us" in valid:
         "Ten captured operators per replay. Python scheduling and output allocation excluded."
     )
 st.dataframe(valid.drop(columns=["samples_us"], errors="ignore"), width="stretch")
+st.download_button(
+    "Download this comparison as CSV",
+    valid.drop(columns=["samples_us"], errors="ignore").to_csv(index=False),
+    "helix-comparison.csv",
+    "text/csv",
+)
+for artifact in artifacts:
+    if artifact.get("cost_reservation", {}).get("id") != valid.iloc[0]["run"]:
+        continue
+    inference = artifact.get("inference", {})
+    if inference.get("measured"):
+        candidate = inference.get("triton") or inference.get("cuda")
+        st.subheader("Pretrained inference · SmolLM2-135M")
+        native, custom, gain = st.columns(3)
+        native.metric("PyTorch tokens/s", f"{inference['baseline']['tokens_per_second']:.2f}")
+        custom.metric("Custom RMSNorm tokens/s", f"{candidate['tokens_per_second']:.2f}")
+        gain.metric("End-to-end speedup", f"{inference['end_to_end_speedup']:.3f}×")
+        st.caption(
+            f"Prefill logits maximum absolute error: {inference['logits_max_abs_error']:.5g}; "
+            f"generated token agreement: {inference['generation_token_agreement']:.1%}"
+        )
+        st.write(candidate["text"])
 with st.expander("Hardware, profiling and inference artifacts"):
     for artifact in artifacts:
         st.json({key: value for key, value in artifact.items() if key != "rows"})

@@ -14,6 +14,6 @@ gpu-test:
 benchmark:
 	uv run modal run modal_apps/benchmark.py
 dashboard:
-	uv run --extra dashboard streamlit run dashboard/app.py
+	uv run --extra dashboard python -m streamlit run dashboard/app.py
 build:
 	uv build

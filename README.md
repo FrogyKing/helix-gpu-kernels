@@ -32,6 +32,25 @@ Never interpret skipped GPU tests as a passing GPU validation run. Supported GPU
 claims apply only to devices named in measured artifacts. A10 and H100 experiments
 require separate approval and have not been implied by an L4 experiment.
 
+The initial NVIDIA L4 run passed **176 correctness tests** and **171 benchmark
+comparisons**. Representative FP16 CUDA Graph medians (µs per captured operator):
+
+| Operation / shape | PyTorch | Triton | CUDA |
+|---|---:|---:|---:|
+| Softmax 128×1024 | 4.813 | 2.304 | 3.686 |
+| RMSNorm 128×1024 | 15.565 | 2.099 | 3.277 |
+| GEMM M128 K768 N3072 | 11.162 | 21.709 | 259.072 tiled |
+| Causal attention B1 H4 N256 D64 | 9.216 | 11.366 | 121.648 |
+
+These exclude Python scheduling and output allocation; dispatch timings can give
+a different comparison, as the [full report](benchmarks/reports/initial-l4.md)
+shows. Pretrained SmolLM2 inference with Triton RMSNorm observed 730.8→666.8 ms
+median generation time (1.096×) over three repetitions, with identical generated
+tokens. That small fixed-order trial is preliminary, with overlapping latency
+tails. INT8 storage compressed weights but did not beat original FP16 linear in
+the representative graph comparison. Conservative cumulative cost reservations
+were $1.316502; actual provider billing remains to be reconciled.
+
 ## Requirements and setup
 
 - Python 3.12 and [uv](https://docs.astral.sh/uv/).
@@ -163,7 +182,7 @@ Local optional dependencies are available through `uv sync --extra inference`.
 ## Dashboard
 
 ```powershell
-uv run --extra dashboard streamlit run dashboard/app.py
+uv run --extra dashboard python -m streamlit run dashboard/app.py
 ```
 
 Filter measured artifacts by kernel, GPU, shape, precision, causal mask and run.
