@@ -196,6 +196,7 @@ The dashboard runs on the CPU and needs no cloud deployment.
 GitHub Actions runs CPU correctness, Python lint/format, CUDA source formatting,
 documentation/config checks and distribution builds on Windows and Linux. GPU
 correctness is an explicit Modal job, never an automatically billed PR check.
+Development and review requirements are documented in [Contributing](CONTRIBUTING.md).
 
 Future research: vectorized CUDA row loads, register-blocked GEMM, explicit MMA,
 architecture-aware tiles, bounded measured tuning, cooperative query attention,
